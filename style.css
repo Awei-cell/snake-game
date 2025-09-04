@@ -1,0 +1,165 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+.score, .high-score {
+    background-color: #f8f8f8;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#score, #highScore {
+    color: #4CAF50;
+}
+
+.game-container {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+#gameCanvas {
+    border: 2px solid #333;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+}
+
+.game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* 添加速度控制样式 */
+.speed-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#speedSlider {
+    width: 200px;
+}
+
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#startBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#startBtn:hover {
+    background-color: #45a049;
+}
+
+#pauseBtn {
+    background-color: #ff9800;
+    color: white;
+}
+
+#pauseBtn:hover {
+    background-color: #e68a00;
+}
+
+#restartBtn {
+    background-color: #f44336;
+    color: white;
+}
+
+#restartBtn:hover {
+    background-color: #da190b;
+}
+
+.game-instructions {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.game-instructions h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.game-instructions ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.game-instructions li {
+    margin-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.game-instructions li:before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .game-controls {
+        flex-wrap: wrap;
+    }
+}
