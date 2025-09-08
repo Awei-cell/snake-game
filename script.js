@@ -8,6 +8,13 @@ const pauseBtn = document.getElementById('pauseBtn');
 const restartBtn = document.getElementById('restartBtn');
 const speedSlider = document.getElementById('speedSlider');
 const speedValue = document.getElementById('speedValue');
+const playerNameInput = document.getElementById('playerName');
+const saveNameBtn = document.getElementById('saveNameBtn');
+const currentPlayerNameElement = document.getElementById('currentPlayerName');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const leaderboard = document.getElementById('leaderboard');
+const leaderboardList = document.getElementById('leaderboardList');
+const closeLeaderboardBtn = document.getElementById('closeLeaderboardBtn');
 
 // 设置画布尺寸
 canvas.width = 400;
@@ -19,10 +26,12 @@ let food = {};
 let direction = '';
 let nextDirection = '';
 let score = 0;
-let highScore = localStorage.getItem('snakeHighScore') || 0;
+let highScore = 0;
 let gameSpeed = 150; // 初始速度
 let gameInterval = null;
 let gameRunning = false;
+let playerName = '';
+let leaderboardData = [];
 
 // 初始化游戏
 function initGame() {
@@ -41,15 +50,19 @@ function initGame() {
     score = 0;
     scoreElement.textContent = score;
     
-    // 生成食物
-    generateFood();
+    // 加载玩家名称
+    loadPlayerName();
     
-    // 显示最高分
-    highScoreElement.textContent = highScore;
+    // 加载并显示排行榜
+    loadLeaderboard();
+    updateHighScoreDisplay();
     
     // 更新速度显示
     speedValue.textContent = `${gameSpeed}ms`;
     speedSlider.value = gameSpeed;
+    
+    // 生成初始食物
+    generateFood();
     
     // 绘制初始游戏状态
     draw();
@@ -239,8 +252,7 @@ function update() {
         // 检查是否更新最高分
         if (score > highScore) {
             highScore = score;
-            highScoreElement.textContent = highScore;
-            localStorage.setItem('snakeHighScore', highScore);
+            updateHighScoreDisplay();
         }
         
         // 生成新食物
@@ -261,13 +273,30 @@ function gameOver() {
     startBtn.disabled = false;
     pauseBtn.disabled = true;
     restartBtn.disabled = false;
+    speedSlider.disabled = false;
+    
+    // 如果有玩家名称且分数不为0，添加到排行榜
+    if (playerName && score > 0) {
+        addToLeaderboard(playerName, score);
+    }
     
     // 显示游戏结束消息
-    alert(`游戏结束！您的分数是：${score}`);
+    alert(`游戏结束！${playerName ? playerName : '玩家'}，您的分数是：${score}`);
 }
 
 // 开始游戏
 function startGame() {
+    // 检查是否有玩家名称
+    if (!playerName) {
+        if (playerNameInput.value.trim()) {
+            savePlayerName();
+        } else {
+            alert('请输入您的名称！');
+            playerNameInput.focus();
+            return;
+        }
+    }
+    
     if (!gameRunning) {
         gameRunning = true;
         startBtn.disabled = true;
@@ -367,12 +396,119 @@ function handleKeyDown(e) {
     }
 }
 
+// 保存玩家名称
+function savePlayerName() {
+    const name = playerNameInput.value.trim();
+    if (name) {
+        playerName = name;
+        localStorage.setItem('snakePlayerName', playerName);
+        playerNameInput.value = '';
+        currentPlayerNameElement.textContent = `当前玩家: ${playerName}`;
+        alert('名称保存成功！');
+    }
+}
+
+// 加载玩家名称
+function loadPlayerName() {
+    const savedName = localStorage.getItem('snakePlayerName');
+    if (savedName) {
+        playerName = savedName;
+        currentPlayerNameElement.textContent = `当前玩家: ${playerName}`;
+    } else {
+        currentPlayerNameElement.textContent = '请输入您的名称';
+    }
+}
+
+// 添加到排行榜
+function addToLeaderboard(name, score) {
+    // 加载现有排行榜数据
+    loadLeaderboard();
+    
+    // 添加新分数
+    leaderboardData.push({ name, score, date: new Date().toISOString() });
+    
+    // 按分数排序（降序），分数相同时按时间排序（新的在前）
+    leaderboardData.sort((a, b) => {
+        if (a.score !== b.score) {
+            return b.score - a.score;
+        }
+        return new Date(b.date) - new Date(a.date);
+    });
+    
+    // 只保留前10名
+    if (leaderboardData.length > 10) {
+        leaderboardData = leaderboardData.slice(0, 10);
+    }
+    
+    // 保存排行榜
+    localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboardData));
+    
+    // 更新最高分显示
+    if (score > highScore) {
+        highScore = score;
+        updateHighScoreDisplay();
+    }
+}
+
+// 加载排行榜
+function loadLeaderboard() {
+    const savedData = localStorage.getItem('snakeLeaderboard');
+    if (savedData) {
+        leaderboardData = JSON.parse(savedData);
+    } else {
+        leaderboardData = [];
+    }
+    
+    // 更新最高分
+    if (leaderboardData.length > 0) {
+        highScore = leaderboardData[0].score;
+    } else {
+        highScore = 0;
+    }
+}
+
+// 更新最高分显示
+function updateHighScoreDisplay() {
+    highScoreElement.textContent = highScore;
+    
+    // 如果有最高分玩家名称，显示出来
+    if (leaderboardData.length > 0) {
+        highScoreElement.textContent += ` (${leaderboardData[0].name})`;
+    }
+}
+
+// 显示排行榜
+function showLeaderboard() {
+    loadLeaderboard();
+    leaderboardList.innerHTML = '';
+    
+    if (leaderboardData.length === 0) {
+        leaderboardList.innerHTML = '<li>暂无记录</li>';
+    } else {
+        leaderboardData.forEach((entry, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${index + 1}. ${entry.name}: ${entry.score}分`;
+            leaderboardList.appendChild(li);
+        });
+    }
+    
+    leaderboard.style.display = 'block';
+}
+
+// 隐藏排行榜
+function hideLeaderboard() {
+    leaderboard.style.display = 'none';
+}
+
 // 添加事件监听器
 startBtn.addEventListener('click', startGame);
 pauseBtn.addEventListener('click', pauseGame);
 restartBtn.addEventListener('click', restartGame);
 speedSlider.addEventListener('input', updateGameSpeed);
 window.addEventListener('keydown', handleKeyDown);
+saveNameBtn.addEventListener('click', savePlayerName);
+leaderboardBtn.addEventListener('click', showLeaderboard);
+closeLeaderboardBtn.addEventListener('click', hideLeaderboard);
 
 // 初始化游戏
 initGame();

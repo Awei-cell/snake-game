@@ -29,6 +29,28 @@ h1 {
     font-size: 2.5em;
 }
 
+/* 玩家名称样式 */
+.player-name {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#playerName {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 150px;
+}
+
+#currentPlayerName {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
 .game-info {
     display: flex;
     justify-content: space-around;
@@ -64,6 +86,7 @@ h1 {
     justify-content: center;
     gap: 10px;
     margin: 20px 0;
+    flex-wrap: wrap;
 }
 
 /* 添加速度控制样式 */
@@ -79,6 +102,45 @@ h1 {
     width: 200px;
 }
 
+/* 排行榜样式 */
+.leaderboard {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+    display: none;
+}
+
+.leaderboard-content {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+#leaderboardList {
+    list-style-position: inside;
+    padding-left: 20px;
+}
+
+#leaderboardList li {
+    margin-bottom: 8px;
+    padding: 5px;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+#leaderboardList li:nth-child(1) {
+    background-color: #fff9c4;
+    font-weight: bold;
+}
+
+#leaderboardList li:nth-child(2) {
+    background-color: #e3f2fd;
+}
+
+#leaderboardList li:nth-child(3) {
+    background-color: #f3e5f5;
+}
 
 .btn {
     padding: 10px 20px;
@@ -114,6 +176,25 @@ h1 {
 
 #restartBtn:hover {
     background-color: #da190b;
+}
+
+#leaderboardBtn {
+    background-color: #2196F3;
+    color: white;
+}
+
+#leaderboardBtn:hover {
+    background-color: #0b7dda;
+}
+
+#closeLeaderboardBtn {
+    background-color: #607d8b;
+    color: white;
+    margin-top: 10px;
+}
+
+#closeLeaderboardBtn:hover {
+    background-color: #546e7a;
 }
 
 .game-instructions {
@@ -161,5 +242,14 @@ h1 {
     
     .game-controls {
         flex-wrap: wrap;
+    }
+    
+    .player-name {
+        flex-direction: column;
+    }
+    
+    #playerName {
+        width: 100%;
+        max-width: 200px;
     }
 }
